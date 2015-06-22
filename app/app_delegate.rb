@@ -13,6 +13,7 @@ class AppDelegate
 
     @status_menu.addItem createMenuItem("About #{@app_name}", 'orderFrontStandardAboutPanel:')
     @status_menu.addItem createMenuItem("Custom Action", 'pressAction')
+    @status_menu.addItem createMenuItem("Increment", 'pressIncrement')
     @status_menu.addItem createMenuItem("Quit", 'terminate:')
   end
 
@@ -25,5 +26,12 @@ class AppDelegate
     alert.setMessageText "Action triggered from status bar menu"
     alert.addButtonWithTitle "OK"
     alert.runModal
+  end
+
+  def pressIncrement
+    @count ||= 0
+    @count += 1
+
+    @status_item.setTitle("#{@count} times")
   end
 end
