@@ -4,6 +4,7 @@ class AppDelegate
   INNER_HEIGHT = 180
   BUTTON_WIDTH = 40
   BUTTON_HEIGHT = 30
+  SCROLL_VIEW_INSET = 3
 
   attr_accessor :status_menu
 
@@ -35,13 +36,16 @@ class AppDelegate
   def buildWindow
     @window = Motion::Popup::Panel.alloc.initPopup(POPUP_WIDTH, POPUP_HEIGHT)
 
-    @inner_rect = NSInsetRect(@window.contentView.frame, @window.background.line_thickness, @window.background.arrow_height)
-    @inner_rect.origin.y += @inner_rect.size.height - INNER_HEIGHT
-    @inner_rect.size.height = INNER_HEIGHT
+    scroll_view = NSScrollView.alloc.initWithFrame(NSInsetRect(@window.contentView.frame, @window.background.line_thickness + SCROLL_VIEW_INSET, @window.background.arrow_height + SCROLL_VIEW_INSET + (BUTTON_HEIGHT / 2)))
+    scroll_view.hasVerticalScroller = true
+    @window.contentView.addSubview(scroll_view)
 
-    @inner_box = NSBox.alloc.initWithFrame(@inner_rect)
-    @inner_box.setTitle("Popup")
-    @window.contentView.addSubview(@inner_box)
+    @collection_view = NSCollectionView.alloc.initWithFrame(
+      scroll_view.frame)
+    @collection_view.setItemPrototype(VillainPrototype.new)
+    @collection_view.setContent(VILLAINS)
+
+    scroll_view.documentView = @collection_view
 
     @options_button = NSButton.alloc.initWithFrame(NSMakeRect(POPUP_WIDTH - BUTTON_WIDTH - 5, 5, BUTTON_WIDTH, BUTTON_HEIGHT))
     @options_button.setImagePosition(NSImageOnly)
